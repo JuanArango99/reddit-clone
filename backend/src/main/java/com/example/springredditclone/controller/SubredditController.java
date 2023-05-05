@@ -21,8 +21,8 @@ public class SubredditController {
     private final SubredditService subredditService;
 
     @PostMapping
-    public void createSubreddit(@RequestBody SubredditDto subredditDto){
-        ResponseEntity.status(HttpStatus.CREATED)
+    public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditDto subredditDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(subredditService.save(subredditDto));
     }
 

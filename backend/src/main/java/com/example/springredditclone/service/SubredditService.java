@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class SubredditService
-{
+public class SubredditService {
     private final SubredditRepository subredditRepository;
 
     @Transactional(readOnly = true)
@@ -33,7 +32,6 @@ public class SubredditService
         return subredditDto;
     }
 
-    @Transactional
     private Subreddit mapSubredditDto(SubredditDto subredditDto){
         return Subreddit.builder().name(subredditDto.getName())
                 .description(subredditDto.getDescription())
