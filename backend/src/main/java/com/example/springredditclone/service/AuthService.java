@@ -10,16 +10,17 @@ import com.example.springredditclone.model.VerificationToken;
 import com.example.springredditclone.repository.UserRepository;
 import com.example.springredditclone.repository.VerificationTokenRepository;
 import com.example.springredditclone.security.JwtProvider;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -54,6 +55,14 @@ public class AuthService {
                 user.getEmail(), "Thank you for signing up to Spring Reddit, " +
                 "please click on the below url to activate your account : " +
                 "http://localhost:8080/api/auth/accountVerification/" + token));
+    }
+
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+        Jwt principal = (Jwt) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getSubject())
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
     }
 
     private String generateVerificationToken(User user){
