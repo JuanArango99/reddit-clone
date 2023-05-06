@@ -12,6 +12,7 @@ import com.example.springredditclone.repository.VerificationTokenRepository;
 import com.example.springredditclone.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -96,6 +97,11 @@ public class AuthService {
                 .authenticationToken(token)
                 .username(loginRequest.getUsername())
                 .build();
-
     }
+
+    public boolean isLoggedIn() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
+    }
+
 }
