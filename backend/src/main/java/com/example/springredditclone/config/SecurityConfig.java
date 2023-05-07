@@ -1,4 +1,5 @@
 package com.example.springredditclone.config;
+
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -56,11 +57,13 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/**")
                         .permitAll()
-                        .requestMatchers("/v2/api-docs",
+                        .requestMatchers("/v3/api-docs/**",
                                 "/configuration/ui",
                                 "/swagger-resources/**",
                                 "/configuration/security",
                                 "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-ui/index.html",
                                 "/webjars/**")
                         .permitAll()
                         .anyRequest()
