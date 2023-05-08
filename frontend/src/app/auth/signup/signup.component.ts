@@ -37,10 +37,10 @@ export class SignupComponent implements OnInit {
     this.signupRequestPayload.username = this.signUpForm.get('username')?.value;
     this.signupRequestPayload.password = this.signUpForm.get('password')?.value;
     this.authService.signup(this.signupRequestPayload)
-      .subscribe( () => {
+      .subscribe( (data) => {
         this.router.navigate(['/login'],
         {queryParams:{registered:'true'}});
-      }, () => {
+      }, (error) => {
         this.toastr.error('Registration Failed!, please try again');
       });
   }

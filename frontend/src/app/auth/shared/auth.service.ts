@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { SignupRequestPayload } from '../signup/signup-request.payload';
 import { Observable } from 'rxjs';
@@ -12,6 +12,13 @@ import { LocalStorageService } from 'ngx-webstorage';
 })
 export class AuthService {
  
+  @Output() loggedIn: EventEmitter<boolean> = new EventEmitter();
+  @Output() username: EventEmitter<string> = new EventEmitter();
+
+  refreshTokenPayload = {
+    refreshToken: this.getRefreshToken(),
+    username: this.getUserName()
+  }
 
   constructor(private httpClient: HttpClient, private localStorage: LocalStorageService) { }
 
@@ -20,35 +27,37 @@ export class AuthService {
   }
 
   login(loginRequestPayload: LoginRequestPayload): Observable<boolean> {
-    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/auth/login', loginRequestPayload)
-      .pipe(map(data => {
+    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/auth/login',
+      loginRequestPayload).pipe(map(data => {
         this.localStorage.store('authenticationToken', data.authenticationToken);
         this.localStorage.store('username', data.username);
         this.localStorage.store('refreshToken', data.refreshToken);
         this.localStorage.store('expiresAt', data.expiresAt);
-       
+
+        this.loggedIn.emit(true);
+        this.username.emit(data.username);
         return true;
       }));
   }
 
 
 
-refreshToken() {
-  const refreshTokenPayload = {
-    refreshToken: this.getRefreshToken(),
-    username: this.getUserName()
+  getJwtToken() {
+    return this.localStorage.retrieve('authenticationToken');
   }
-  return this.httpClient.post<LoginResponse>('http://localhost:8080/api/auth/refresh/token',
-    refreshTokenPayload)
-    .pipe(tap(response => {
-      this.localStorage.store('authenticationToken', response.authenticationToken);
-      this.localStorage.store('expiresAt', response.expiresAt);
-    }));
-}
 
-getJwtToken() {
-  return this.localStorage.retrieve('authenticationToken');
-}
+  refreshToken() {
+    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/auth/refresh/token',
+      this.refreshTokenPayload)
+      .pipe(tap(response => {
+        this.localStorage.clear('authenticationToken');
+        this.localStorage.clear('expiresAt');
+
+        this.localStorage.store('authenticationToken',
+          response.authenticationToken);
+        this.localStorage.store('expiresAt', response.expiresAt);
+      }));
+  }
 
 getRefreshToken() {
   return this.localStorage.retrieve('refreshToken');
@@ -60,6 +69,10 @@ getUserName() {
 
 getExpirationTime() {
   return this.localStorage.retrieve('expiresAt');
+}
+
+isLoggedIn(): boolean {
+  return this.getJwtToken() != null;
 }
 
 
