@@ -16,7 +16,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler):
     Observable<HttpEvent<any>> {
-        
+
+    if (req.url.indexOf('refresh') !== -1 || req.url.indexOf('login') !== -1) {
+        return next.handle(req);
+    }
     const jwtToken = this.authService.getJwtToken();
 
     if (jwtToken) {
@@ -33,7 +36,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
 }
 
-    private handleAuthErrors(req: HttpRequest<any>, next: HttpHandler)
+private handleAuthErrors(req: HttpRequest<any>, next: HttpHandler)
     : Observable<HttpEvent<any>> {
     if (!this.isTokenRefreshing) {
         this.isTokenRefreshing = true;
@@ -66,4 +69,5 @@ addToken(req: HttpRequest<any>, jwtToken: any) {
             'Bearer ' + jwtToken)
     });
 }
+
 }

@@ -59,6 +59,9 @@ export class LoginComponent implements OnInit{
   }
 
   
+  }
+
+  
 
 
 
@@ -67,4 +70,4 @@ export class LoginComponent implements OnInit{
 
 
 
-}
+

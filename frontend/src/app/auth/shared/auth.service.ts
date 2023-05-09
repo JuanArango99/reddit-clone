@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { SignupRequestPayload } from '../signup/signup-request.payload';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { LoginResponse } from '../login/login-response.payload';
 import { LoginRequestPayload } from '../login/login-request.payload';
 import { map, tap } from 'rxjs/operators';
@@ -40,8 +40,6 @@ export class AuthService {
       }));
   }
 
-
-
   getJwtToken() {
     return this.localStorage.retrieve('authenticationToken');
   }
@@ -59,21 +57,30 @@ export class AuthService {
       }));
   }
 
-getRefreshToken() {
-  return this.localStorage.retrieve('refreshToken');
-}
+  logout() {
+    this.httpClient.post('http://localhost:8080/api/auth/logout', this.refreshTokenPayload,
+      { responseType: 'text' })
+      .subscribe(data => {
+        console.log(data);
+      }, error => {
+        throwError(error);
+      })
+    this.localStorage.clear('authenticationToken');
+    this.localStorage.clear('username');
+    this.localStorage.clear('refreshToken');
+    this.localStorage.clear('expiresAt');
+  }
 
-getUserName() {
-  return this.localStorage.retrieve('username');
-}
+  getUserName() {
+    return this.localStorage.retrieve('username');
+  }
+  getRefreshToken() {
+    return this.localStorage.retrieve('refreshToken');
+  }
 
-getExpirationTime() {
-  return this.localStorage.retrieve('expiresAt');
-}
-
-isLoggedIn(): boolean {
-  return this.getJwtToken() != null;
-}
+  isLoggedIn(): boolean {
+    return this.getJwtToken() != null;
+  }
 
 
 }
