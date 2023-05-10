@@ -11,12 +11,11 @@ import { PostService } from '../post.service';
   encapsulation: ViewEncapsulation.None, 
 })
 export class PostTileComponent implements OnInit{
-
-  @Input() posts: PostModel[] = [];
+  
   faComments = faComments;
+  @Input() posts: PostModel[];
 
-  constructor(private router: Router){     
-  }
+  constructor(private router: Router){  }
 
   ngOnInit(): void {  }
 

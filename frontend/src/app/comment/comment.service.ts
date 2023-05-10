@@ -8,6 +8,7 @@ import { CommentPayload } from './comment-payload';
 })
 export class CommentService implements OnInit{
   
+  
   constructor(private http: HttpClient){  }
 
   ngOnInit(): void {
@@ -20,6 +21,10 @@ export class CommentService implements OnInit{
 
   postComment(commentPayload: CommentPayload): Observable<any> {
     return this.http.post<any>('http://localhost:8080/api/comments/', commentPayload);
+  }
+
+  getAllCommentsByUser(name: string): Observable<CommentPayload[]> {
+    return this.http.get<CommentPayload[]>('http://localhost:8080/api/comments/by-user/' + name);
   }
 
 }
