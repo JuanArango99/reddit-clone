@@ -11,6 +11,7 @@ export class SubredditSideBarComponent implements OnInit {
 
   subreddits: Array<SubredditModel> = [];
   displayViewAll: Boolean;
+  
   constructor(private subredditService: SubredditService) {
     this.subredditService.getAllSubreddits().subscribe(data => {
       if (data.length > 3) {
@@ -22,8 +23,6 @@ export class SubredditSideBarComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void { }
 
 }

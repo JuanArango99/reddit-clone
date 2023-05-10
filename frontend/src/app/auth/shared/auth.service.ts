@@ -20,10 +20,12 @@ export class AuthService {
     username: this.getUserName()
   }
 
-  constructor(private httpClient: HttpClient, private localStorage: LocalStorageService) { }
+  constructor(private httpClient: HttpClient,
+    private localStorage: LocalStorageService) {
+  }
 
-  signup(signupRequestPayload: SignupRequestPayload ): Observable<any> {
-    return this.httpClient.post('http://localhost:8080/api/auth/signup',signupRequestPayload,{responseType: 'text'});
+  signup(signupRequestPayload: SignupRequestPayload): Observable<any> {
+    return this.httpClient.post('http://localhost:8080/api/auth/signup', signupRequestPayload, { responseType: 'text' });
   }
 
   login(loginRequestPayload: LoginRequestPayload): Observable<boolean> {
@@ -55,20 +57,6 @@ export class AuthService {
           response.authenticationToken);
         this.localStorage.store('expiresAt', response.expiresAt);
       }));
-  }
-
-  logout() {
-    this.httpClient.post('http://localhost:8080/api/auth/logout', this.refreshTokenPayload,
-      { responseType: 'text' })
-      .subscribe(data => {
-        console.log(data);
-      }, error => {
-        throwError(error);
-      })
-    this.localStorage.clear('authenticationToken');
-    this.localStorage.clear('username');
-    this.localStorage.clear('refreshToken');
-    this.localStorage.clear('expiresAt');
   }
 
   getUserName() {

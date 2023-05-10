@@ -11,8 +11,8 @@ import { SubredditService } from '../subreddit.service';
   styleUrls: ['./create-subreddit.component.css']
 })
 export class CreateSubredditComponent implements OnInit{
-  subredditModel: SubredditModel;
   createSubredditForm: FormGroup;
+  subredditModel: SubredditModel;
   title = new FormControl('');
   description = new FormControl('');
 
@@ -41,7 +41,7 @@ export class CreateSubredditComponent implements OnInit{
     this.subredditModel.description = this.createSubredditForm.get('description')
     .value;
     this.subredditService.createSubreddit(this.subredditModel).subscribe(data => {
-      this.router.navigateByUrl('/list-subreddits');
+      this.router.navigate(['/list-subreddits']);
     }, error => {
       throwError(error);
     })
