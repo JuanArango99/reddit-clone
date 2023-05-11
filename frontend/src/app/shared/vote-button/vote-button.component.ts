@@ -22,6 +22,7 @@ export class VoteButtonComponent implements OnInit{
   faArrowDown = faArrowDown;
   upvoteColor: string;
   downvoteColor: string;
+  isLoggedIn: boolean;
 
   constructor(private voteService: VoteService,
     private authService: AuthService,
@@ -54,7 +55,7 @@ export class VoteButtonComponent implements OnInit{
     this.voteService.vote(this.votePayload).subscribe(() => {
       this.updateVoteDetails();
     }, error => {
-      this.toastr.error(error.error.message);
+      this.toastr.error("Ya votaste");
       throwError(error);
     });
   }
